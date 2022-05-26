@@ -1,0 +1,25 @@
+{
+  "name": "lms-discovery",
+  "version": "0.1.0",
+  "description": "Logitech Media Server discovery for Node.js",
+  "main": "./lib/index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/patrickkfkan/lms-discovery.git"
+  },
+  "keywords": [
+    "logitech media server",
+    "squeezebox",
+    "autodiscover",
+    "discovery"
+  ],
+  "author": "Patrick Kan",
+  "license": "MIT",
+  "dependencies": {
+    "deep-equal": "^2.0.5",
+    "eventemitter3": "^4.0.7"
+  }
+}
