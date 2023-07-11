@@ -1,19 +1,21 @@
-const discovery = require('../');
+import discovery from '../dist/mjs/index.js';
 
 discovery.on('discovered', (server) => {
-  console.log('New server discovered:', server);
+  console.log('Server discovered:', server);
 });
 
 discovery.on('lost', (server) => {
-  console.log('Previously-discovered server lost:', server);
+  console.log('Server lost:', server);
+});
+
+discovery.on('error', (error) => {
+  console.log('Error:', error);
 });
 
 // Uncomment following block to enable debug messages
-/*
-discovery.setDebug(true, (msg) => {
-    console.log('[lms-discovery::DEBUG] ' + msg);
-});
-*/
+/*Discovery.setDebug(true, (msg) => {
+  console.log(`[lms-discovery::DEBUG] ${msg}`);
+});*/
 
 const opts = {
   discoveredTTL: 40000 // Override default 60000

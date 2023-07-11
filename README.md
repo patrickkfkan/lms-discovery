@@ -11,10 +11,13 @@ npm install --save lms-discovery
 ## Usage
 
 ```
+// ESM
+import discovery from 'lms-discovery';
+// CJS
 const discovery = require('lms-discovery');
 
 discovery.on('discovered', (server) => {
-    // Do something with discovered server
+    console.log('Server discovered:', server);
 });
 
 discovery.on('lost', (server) => {
@@ -26,111 +29,139 @@ discovery.start();
 ...
 
 discovery.stop();
+
+
+// Output
+Server discovered: {
+    ip: '192.168.1.85',     // Server's IP address
+    name: 'my-lms-server',  // Server name
+    ver: '8.2.1',           // Server version
+    uuid: '187fa185-d108-408b-a8bd-8f5a4bb855bd',  // Unique identifier
+    jsonPort: '9000',       // Port for JSON-RPC requests
+    cliPort: '9090'         // Port for CLI commands and queries   
+}
+
+```
+
+Run [example](example/index.ts):
+```
+npm run example
 ```
 
 ## API
 
-### Event functions
+<details>
+<summary><code>start([options])</code></summary>
+<br />
 
-`on(event, listener)`<br>
-`once(event, listener)`<br>
-`off(event[, listener])`<br>
+<p>Starts the discovery service.</p>
 
-- `event` \<string\>
-- `listener` \<Function\>
+**Params**
 
-|Function                  |Description                                     |
-|--------------------------|------------------------------------------------|
-|`on(event, listener)`     |Adds `listener` function for `event`.           |
-|`once(event, listener)`   |Adds one-time `listener` function for `event`.  |
-|`off(event[, listener])`  |Removes `listener` function for `event`. If `listener` is not specified, removes all listeners for the event.|
+- `options`: (*optional* and *all properties optional*)
+    - `broadcastAddress`: (string) network address used to transmit discovery requests. Default: `255.255.255.255`.
+    - `discoveredTTL`: (number) how long in milliseconds to wait for a discovered server to respond to a subsqeuent discovery request before it is presumed lost. Default: `60000` (60 seconds).
+    - `discoverInterval`: (number) how often in milliseconds to broadcast discovery requests. Default: `30000` (30 seconds).
 
-Events:
+> `discoveredTTL` must be larger than `discoverInterval`.
 
-|Event          |    Description                                            |
-|---------------|-----------------------------------------------------------|
-|`discovered`   |Emitted when a new server is discovered.                   |
-|`lost`         |Emitted when a previously-discovered server is lost. A server is considered lost when it no longer responds to discovery requests within a stipulated period.|
+---
+</details>
 
-Data passed to `listener`:
+<details>
+<summary><code>stop()</code></summary>
+<br />
 
-|Event          |Data                                                       |
-|---------------|-----------------------------------------------------------|
-|`discovered`   |\<Object\> Server info of discovered server                  |
-|`lost`         |\<Object\> Server info of lost server                        |
+<p>Stops the discovery service.</p>
 
-Example server info:
-```
-{
-    ip: '192.168.1.85',     // Server's IP address
-    name: 'my-lms-server',  // Server name
-    ver: '8.2.1',           // Server version
-    uuid: '187fa185-d108-408b-a8bd-8f5a4bb855bd',
-    jsonPort: '9000',       // Port for JSON-RPC requests
-    cliPort: '9090'         // Port for CLI commands and queries   
-}
-```
+---
+</details>
 
-### `start([options])`
+<details>
+<summary><code>getStatus()</code></summary>
+<br />
 
-- `options` \<Object\>
-    - `broadcastAddress`: the broadcast address to which discovery requests are to be sent. Default: `255.255.255.255`.
-    - `discoveredTTL`: period in milliseconds. If a previously-discovered server does not respond to subsequent discovery requests made within this period, it is considered lost. Default: `60000` (60 seconds).
-    - `discoverInterval`: the interval in milliseconds at which discovery requests are sent. Default: `30000` (30 seconds).
+<p>Gets the status of the discovery service.</p>
 
-Starts the discovery service.
+**Returns**
 
-After discovery has started, you must stop it before calling `start()` again. If you don't do this, an error will be thrown.
+`running` or `stop`
 
-Normally, you would register listeners for the `discover` and `lost` events before calling `start()`.
+---
+</details>
 
-> If you specify `discoveredTTL` and / or `discoverInterval` in `options`, make sure the former is larger than the latter, otherwise an error will be thrown. Also ensure that `discoveredTTL` is reasonably larger than `discoverInterval`, so as to avoid the situation where a discovered server actually responds but appears momentarily lost because a discovery request is not made in time.
+<details>
+<summary><code>getAllDiscovered()</code></summary>
+<br />
 
-### `stop()`
+<p>Gets all servers discovered so far.</p>
 
-Stops the discovery service.
+**Returns**
 
-### `getStatus()`
+Array<[ServerInfo](docs/api/interfaces/ServerInfo.md)>
 
-- Returns: \<string\>
+---
+</details>
 
-Returns the status of the discovery service: `running` or `stop`.
+<details>
+<summary><code>setDebug(enabled[, callback])</code></summary>
+<br />
 
-### `getAllDiscovered()`
+<p>Whether to enable debug messages.</p>
 
-- Returns: \<Array\>
+**Params**
+- `enabled`: (boolean)
+- `callback`: (function)
+    - If specified, debug messages will be passed to `callback`.
+    - If not specified, debug messages will be printed to console.
 
-Returns an array listing all servers discovered so far. The values in the array are Objects:
+---
+</details>
 
-```
-[
-    {
-        ip: '192.168.1.85',
-        name: 'my-lms-server',
-        ver: '8.2.1',
-        uuid: '187fa185-d108-408b-a8bd-8f5a4bb855bd',
-        jsonPort: '9000',
-        cliPort: '9090'
-    },
-    {
-        ip: '192.168.1.132',
-        name: 'my-lms-server2',
-        ...
-    },
-    ...
-]
-```
+### Events
 
-### `setDebug(enabled[, callback])`
+<details>
+<summary><code>on('discovered', (server) => ...)</code></summary>
+<br />
 
-- `enabled` \<boolean\>
-- `callback` \<Function\>
-    - If not specified, output debug messages to console.
-    - If specified, pass debug messages to `callback` function instead of outputting to console.
+<p>Emitted when a server is discovered.</p>
 
-Specifies whether to enable debug messages.
+**Listener Params**
+- `server`: [ServerInfo](docs/api/interfaces/ServerInfo.md)
+
+---
+</details>
+
+<details>
+<summary><code>on('lost', (server) => ...)</code></summary>
+<br />
+
+Emitted when a server is presumed lost, i.e. when it no longer responds to
+discovery requests within the default or `discoveredTTL` period passed to [`start()`](#api).
+
+**Listener Params**
+- `server`: [ServerInfo](docs/api/interfaces/ServerInfo.md)
+
+---
+</details>
+
+<details>
+<summary><code>on('error', (error) => ...)</code></summary>
+<br />
+
+<p>Emitted when an error has occurred.</p>
+
+**Listener Params**
+- `error`: (any)
+
+---
+</details>
+
 
 ## Changelog
+
+1.0.0:
+- Migrate to TypeScript and package as ESM / CJS hybrid module
 
 0.1.0:
 - Initial release
