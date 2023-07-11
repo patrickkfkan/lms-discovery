@@ -160,6 +160,9 @@ discovery requests within the default or `discoveredTTL` period passed to [`star
 
 ## Changelog
 
+1.0.0:
+- Migrate to TypeScript and package as ESM / CJS hybrid module
+
 0.1.0:
 - Initial release
 

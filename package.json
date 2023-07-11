@@ -1,6 +1,6 @@
 {
   "name": "lms-discovery",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "type": "module",
   "description": "Logitech Media Server discovery for Node.js",
   "scripts": {
