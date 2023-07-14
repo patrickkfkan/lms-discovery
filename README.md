@@ -159,6 +159,9 @@ Emitted when a server is lost.
 
 ## Changelog
 
+1.1.0:
+- Instead of detecting server lost through `discoveredTTL` timers, emit 'lost' events immediately as they occur for servers that advertise `cliPort`.
+
 1.0.0:
 - Migrate to TypeScript and package as ESM / CJS hybrid module
 
