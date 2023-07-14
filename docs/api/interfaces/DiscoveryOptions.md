@@ -26,7 +26,7 @@ Network address used to transmit discovery requests.
 
 #### Defined in
 
-index.ts:22
+[index.ts:23](https://github.com/patrickkfkan/lms-discovery/blob/f60a407/src/index.ts#L23)
 
 ___
 
@@ -44,7 +44,7 @@ How often in milliseconds to broadcast discovery requests.
 
 #### Defined in
 
-index.ts:33
+[index.ts:35](https://github.com/patrickkfkan/lms-discovery/blob/f60a407/src/index.ts#L35)
 
 ___
 
@@ -53,7 +53,8 @@ ___
 • `Optional` **discoveredTTL**: `number`
 
 How long in milliseconds to wait for a discovered server to respond to a
-subsqeuent discovery request before it is presumed lost.
+subsqeuent discovery request before it is presumed lost. Only applicable
+for servers that do not advertise `cliPort`.
 
 **`Default`**
 
@@ -63,4 +64,4 @@ subsqeuent discovery request before it is presumed lost.
 
 #### Defined in
 
-index.ts:28
+[index.ts:30](https://github.com/patrickkfkan/lms-discovery/blob/f60a407/src/index.ts#L30)

@@ -13,9 +13,11 @@ discovery.on('error', (error) => {
 });
 
 // Uncomment following block to enable debug messages
-/*Discovery.setDebug(true, (msg) => {
+/*
+discovery.setDebug(true, (msg) => {
   console.log(`[lms-discovery::DEBUG] ${msg}`);
-});*/
+});
+*/
 
 const opts = {
   discoveredTTL: 40000 // Override default 60000

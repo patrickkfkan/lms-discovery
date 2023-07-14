@@ -1,6 +1,7 @@
 import dgram from 'dgram';
 import deepEqual from 'deep-equal';
 import EventEmitter from 'events';
+import { Telnet } from 'telnet-client';
 
 const DISCOVER_MSG = 'eIPAD\0NAME\0VERS\0UUID\0JSON\0CLIP\0';
 const BROADCAST_PORT = 3483;
@@ -22,7 +23,8 @@ export interface DiscoveryOptions {
   broadcastAddress?: string;
   /**
    * How long in milliseconds to wait for a discovered server to respond to a
-   * subsqeuent discovery request before it is presumed lost.
+   * subsqeuent discovery request before it is presumed lost. Only applicable
+   * for servers that do not advertise `cliPort`.
    * @default 60000 (60 seconds)
    */
   discoveredTTL?: number;
@@ -56,6 +58,7 @@ export class LMSDiscovery extends EventEmitter {
   #opts: Required<DiscoveryOptions>;
   #discovered: Record<ServerInfo['ip'], ServerInfo>;
   #discoveredTTLTimers: Record<ServerInfo['ip'], NodeJS.Timeout>;
+  #cliConnections: Record<ServerInfo['ip'], Telnet>;
   #discoverIntervalTimer: NodeJS.Timeout | null;
   #socket: dgram.Socket | null;
   #debug: {
@@ -71,6 +74,7 @@ export class LMSDiscovery extends EventEmitter {
     };
     this.#discovered = {};
     this.#discoveredTTLTimers = {};
+    this.#cliConnections = {};
   }
 
   /**
@@ -116,6 +120,11 @@ export class LMSDiscovery extends EventEmitter {
       clearTimeout(timer);
     });
     this.#discoveredTTLTimers = {};
+    Object.values(this.#cliConnections).forEach((connection) => {
+      connection.removeAllListeners('close');
+      connection.end();
+    });
+    this.#cliConnections = {};
     this.#discovered = {};
     if (this.#socket) {
       this.#socket.close(() => {
@@ -172,7 +181,7 @@ export class LMSDiscovery extends EventEmitter {
       this.#socket = null;
     });
 
-    socket.on('message', (data, rinfo) => {
+    socket.on('message', async (data, rinfo) => {
       this.#debugLog(`Message received from ${rinfo.address}`);
       const server = this.#parseDiscoveryResponse(data, rinfo);
       if (!server) {
@@ -188,12 +197,43 @@ export class LMSDiscovery extends EventEmitter {
 
       this.#discovered[server.ip] = server;
 
-      this.#discoveredTTLTimers[server.ip] = setTimeout(() => {
-        delete this.#discovered[server.ip];
-        delete this.#discoveredTTLTimers[server.ip];
-        this.#debugLog(`Detected lost server: ${JSON.stringify(server)}. Emitting 'lost' event...`);
-        this.emit('lost', server);
-      }, this.#opts.discoveredTTL);
+      /**
+       * Establish telnet connection with servers that advertise cliPort,
+       * so we can emit server lost event immediately on disconnect.
+       */
+      let cliConnected = !!this.#cliConnections[server.ip];
+      if (!cliConnected && server.cliPort) {
+        const cliConnection = new Telnet();
+        cliConnection.on('close', this.#handleCLIDisconnected.bind(this, server));
+        const connectParams = {
+          host: server.ip,
+          port: server.cliPort,
+          negotiationMandatory: false,
+          timeout: 1500,
+          irs: '\n'
+        };
+        try {
+          await cliConnection.connect(connectParams);
+          this.#cliConnections[server.ip] = cliConnection;
+          this.#debugLog(`Established connection to ${server.ip}:${server.cliPort}`);
+          cliConnected = true;
+        }
+        catch (error) {
+          this.#debugLog(`Failed to connect to ${server.ip}:${server.cliPort}: ${error}`);
+        }
+      }
+      /**
+       * For servers that do not advertise cliPort, or if connection to cliPort failed,
+       * we would have to rely on TTL timers.
+       */
+      if (!cliConnected) {
+        this.#discoveredTTLTimers[server.ip] = setTimeout(() => {
+          delete this.#discovered[server.ip];
+          delete this.#discoveredTTLTimers[server.ip];
+          this.#debugLog(`Detected lost server: ${JSON.stringify(server)}. Emitting 'lost' event...`);
+          this.emit('lost', server);
+        }, this.#opts.discoveredTTL);
+      }
 
       if (!existing) { // Newly-discovered
         this.#debugLog('This is a newly-discovered server. Emitting \'discovered\' event...');
@@ -209,6 +249,17 @@ export class LMSDiscovery extends EventEmitter {
         this.#debugLog('Server already discovered - not going to emit event');
       }
     });
+  }
+
+  #handleCLIDisconnected(server: ServerInfo) {
+    const cliConnection = this.#cliConnections[server.ip];
+    if (cliConnection) {
+      cliConnection.removeAllListeners('close');
+    }
+    delete this.#cliConnections[server.ip];
+    delete this.#discovered[server.ip];
+    this.#debugLog(`Disconnected from server: ${JSON.stringify(server)}. Emitting 'lost' event...`);
+    this.emit('lost', server);
   }
 
   #findDiscoveredByIP(ip: string) {

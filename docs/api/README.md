@@ -25,4 +25,4 @@ lms-discovery
 
 #### Defined in
 
-index.ts:321
+[index.ts:372](https://github.com/patrickkfkan/lms-discovery/blob/f60a407/src/index.ts#L372)

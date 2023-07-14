@@ -38,7 +38,7 @@ EventEmitter.constructor
 
 #### Defined in
 
-index.ts:66
+[index.ts:69](https://github.com/patrickkfkan/lms-discovery/blob/f60a407/src/index.ts#L69)
 
 ## Methods
 
@@ -54,7 +54,7 @@ Returns all servers discovered so far.
 
 #### Defined in
 
-index.ts:131
+[index.ts:140](https://github.com/patrickkfkan/lms-discovery/blob/f60a407/src/index.ts#L140)
 
 ___
 
@@ -70,7 +70,7 @@ Returns status of the discovery service.
 
 #### Defined in
 
-index.ts:139
+[index.ts:148](https://github.com/patrickkfkan/lms-discovery/blob/f60a407/src/index.ts#L148)
 
 ___
 
@@ -93,7 +93,7 @@ Whether to enable debug messages.
 
 #### Defined in
 
-index.ts:148
+[index.ts:157](https://github.com/patrickkfkan/lms-discovery/blob/f60a407/src/index.ts#L157)
 
 ___
 
@@ -115,7 +115,7 @@ Starts the discovery service.
 
 #### Defined in
 
-index.ts:80
+[index.ts:84](https://github.com/patrickkfkan/lms-discovery/blob/f60a407/src/index.ts#L84)
 
 ___
 
@@ -131,7 +131,7 @@ Stops the discovery service.
 
 #### Defined in
 
-index.ts:105
+[index.ts:109](https://github.com/patrickkfkan/lms-discovery/blob/f60a407/src/index.ts#L109)
 
 ## Events
 
@@ -158,7 +158,7 @@ EventEmitter.on
 
 #### Defined in
 
-index.ts:301
+[index.ts:352](https://github.com/patrickkfkan/lms-discovery/blob/f60a407/src/index.ts#L352)
 
 ▸ **on**(`event`, `listener`): [`LMSDiscovery`](LMSDiscovery.md)
 
@@ -181,7 +181,7 @@ EventEmitter.on
 
 #### Defined in
 
-index.ts:308
+[index.ts:359](https://github.com/patrickkfkan/lms-discovery/blob/f60a407/src/index.ts#L359)
 
 ▸ **on**(`event`, `listener`): [`LMSDiscovery`](LMSDiscovery.md)
 
@@ -204,4 +204,4 @@ EventEmitter.on
 
 #### Defined in
 
-index.ts:315
+[index.ts:366](https://github.com/patrickkfkan/lms-discovery/blob/f60a407/src/index.ts#L366)

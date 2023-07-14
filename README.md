@@ -60,7 +60,7 @@ npm run example
 
 - `options`: (*optional* and *all properties optional*)
     - `broadcastAddress`: (string) network address used to transmit discovery requests. Default: `255.255.255.255`.
-    - `discoveredTTL`: (number) how long in milliseconds to wait for a discovered server to respond to a subsqeuent discovery request before it is presumed lost. Default: `60000` (60 seconds).
+    - `discoveredTTL`: (number) how long in milliseconds to wait for a discovered server to respond to a subsqeuent discovery request before it is presumed lost. *Only applicable for servers that do not advertise `cliPort`.* Default: `60000` (60 seconds).
     - `discoverInterval`: (number) how often in milliseconds to broadcast discovery requests. Default: `30000` (30 seconds).
 
 > `discoveredTTL` must be larger than `discoverInterval`.
@@ -136,8 +136,7 @@ Array<[ServerInfo](docs/api/interfaces/ServerInfo.md)>
 <summary><code>on('lost', (server) => ...)</code></summary>
 <br />
 
-Emitted when a server is presumed lost, i.e. when it no longer responds to
-discovery requests within the default or `discoveredTTL` period passed to [`start()`](#api).
+Emitted when a server is lost.
 
 **Listener Params**
 - `server`: [ServerInfo](docs/api/interfaces/ServerInfo.md)

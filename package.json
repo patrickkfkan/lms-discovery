@@ -54,7 +54,8 @@
     "typescript": "^4.9.5"
   },
   "dependencies": {
-    "deep-equal": "^2.2.1"
+    "deep-equal": "^2.2.1",
+    "telnet-client": "^2.0.8"
   },
   "keywords": [
     "logitech media server",

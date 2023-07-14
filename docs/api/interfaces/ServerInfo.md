@@ -23,7 +23,7 @@ Server information
 
 #### Defined in
 
-index.ts:45
+[index.ts:47](https://github.com/patrickkfkan/lms-discovery/blob/f60a407/src/index.ts#L47)
 
 ___
 
@@ -33,7 +33,7 @@ ___
 
 #### Defined in
 
-index.ts:40
+[index.ts:42](https://github.com/patrickkfkan/lms-discovery/blob/f60a407/src/index.ts#L42)
 
 ___
 
@@ -43,7 +43,7 @@ ___
 
 #### Defined in
 
-index.ts:44
+[index.ts:46](https://github.com/patrickkfkan/lms-discovery/blob/f60a407/src/index.ts#L46)
 
 ___
 
@@ -53,7 +53,7 @@ ___
 
 #### Defined in
 
-index.ts:41
+[index.ts:43](https://github.com/patrickkfkan/lms-discovery/blob/f60a407/src/index.ts#L43)
 
 ___
 
@@ -63,7 +63,7 @@ ___
 
 #### Defined in
 
-index.ts:43
+[index.ts:45](https://github.com/patrickkfkan/lms-discovery/blob/f60a407/src/index.ts#L45)
 
 ___
 
@@ -73,4 +73,4 @@ ___
 
 #### Defined in
 
-index.ts:42
+[index.ts:44](https://github.com/patrickkfkan/lms-discovery/blob/f60a407/src/index.ts#L44)
